@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/game_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const Game2048App());
@@ -18,7 +18,7 @@ class Game2048App extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFFAF8EF),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFEDC22E)),
       ),
-      home: const GameScreen(),
+      home: const HomeScreen(),
     );
   }
 }
