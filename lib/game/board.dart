@@ -122,6 +122,22 @@ class Board2048 {
     return false;
   }
 
+  /// Curăță primele rânduri pentru a face loc — folosit ca recompensă rewarded
+  /// după Game Over. Returnează numărul de tile-uri șterse.
+  int clearTopTiles({int rows = 2}) {
+    var cleared = 0;
+    for (var r = 0; r < rows && r < size; r++) {
+      for (var c = 0; c < size; c++) {
+        if (grid[r][c] != 0) {
+          grid[r][c] = 0;
+          cleared++;
+        }
+      }
+    }
+    _previousGrid = null; // nu se mai poate face undo după rewarded clear
+    return cleared;
+  }
+
   bool get won {
     for (final row in grid) {
       for (final v in row) {

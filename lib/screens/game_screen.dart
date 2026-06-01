@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../game/board.dart';
+import '../services/ads_service.dart';
+import '../widgets/banner_ad_widget.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -14,6 +16,10 @@ class _GameScreenState extends State<GameScreen> {
   final Board2048 _board = Board2048();
   int _highScore = 0;
   bool _wonShown = false;
+  bool _rewardedBusy = false;
+  // Snapshot grilă/scor pentru rewarded undo (în caz că _previousGrid lipsește).
+  List<List<int>>? _snapshotGrid;
+  int _snapshotScore = 0;
 
   @override
   void initState() {
@@ -27,6 +33,36 @@ class _GameScreenState extends State<GameScreen> {
     setState(() => _highScore = p.getInt('highScore2048') ?? 0);
   }
 
+  Future<void> _onRewardedUndo() async {
+    if (_rewardedBusy) return;
+    // Există ceva de anulat?
+    final hasUndo = _snapshotGrid != null;
+    if (!hasUndo) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nimic de anulat.')),
+      );
+      return;
+    }
+    setState(() => _rewardedBusy = true);
+    final earned = await AdsService.instance.showRewarded();
+    if (!mounted) return;
+    setState(() {
+      _rewardedBusy = false;
+      if (earned) {
+        // Restore din snapshot — mai sigur decât _board.undo() când a fost deja apelat.
+        _board.grid =
+            _snapshotGrid!.map((r) => List<int>.from(r)).toList();
+        _board.score = _snapshotScore;
+        _snapshotGrid = null;
+      }
+    });
+    if (!earned && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Reclama nu e disponibilă acum.')),
+      );
+    }
+  }
+
   Future<void> _saveHighScore() async {
     if (_board.score > _highScore) {
       _highScore = _board.score;
@@ -36,7 +72,12 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   void _move(int dir) {
+    // Snapshot înainte de mutare — folosit ca fallback pentru rewarded undo.
+    final preGrid = _board.grid.map((r) => List<int>.from(r)).toList();
+    final preScore = _board.score;
     if (_board.move(dir)) {
+      _snapshotGrid = preGrid;
+      _snapshotScore = preScore;
       HapticFeedback.lightImpact();
       _saveHighScore();
       if (_board.won && !_wonShown) {
@@ -56,22 +97,56 @@ class _GameScreenState extends State<GameScreen> {
         });
       }
       if (!_board.canMove) {
-        Future.microtask(() {
+        Future.microtask(() async {
+          await AdsService.instance.maybeShowInterstitial();
           if (!mounted) return;
           showDialog(
             context: context,
-            builder: (c) => AlertDialog(
-              title: const Text('Game Over'),
-              content: Text('Scor final: ${_board.score}'),
-              actions: [
-                TextButton(onPressed: () {
-                  Navigator.pop(c);
-                  setState(() {
-                    _board.newGame();
-                    _wonShown = false;
-                  });
-                }, child: const Text('Joc Nou')),
-              ],
+            builder: (c) => StatefulBuilder(
+              builder: (c, setLocal) => AlertDialog(
+                title: const Text('Game Over'),
+                content: Text('Scor final: ${_board.score}'),
+                actions: [
+                  TextButton(onPressed: () {
+                    Navigator.pop(c);
+                    setState(() {
+                      _board.newGame();
+                      _wonShown = false;
+                    });
+                  }, child: const Text('Joc Nou')),
+                  TextButton.icon(
+                    onPressed: _rewardedBusy
+                        ? null
+                        : () async {
+                            setLocal(() => _rewardedBusy = true);
+                            final earned = await AdsService.instance.showRewarded();
+                            _rewardedBusy = false;
+                            if (!c.mounted) return;
+                            if (earned) {
+                              Navigator.pop(c);
+                              setState(() {
+                                _board.clearTopTiles(rows: 2);
+                              });
+                            } else {
+                              setLocal(() {});
+                              ScaffoldMessenger.of(c).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Reclama nu e disponibilă acum.'),
+                                ),
+                              );
+                            }
+                          },
+                    icon: _rewardedBusy
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.favorite, color: Color(0xFFE53935)),
+                    label: const Text('❤️ Continuă (urmărește reclamă)'),
+                  ),
+                ],
+              ),
             ),
           );
         });
@@ -83,6 +158,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: const BannerAdWidget(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -97,6 +173,19 @@ class _GameScreenState extends State<GameScreen> {
                       _scoreBox('SCOR', _board.score),
                       const SizedBox(width: 8),
                       _scoreBox('TOP', _highScore),
+                      const SizedBox(width: 8),
+                      // Rewarded undo: vede o reclamă scurtă și anulează ultima mutare.
+                      IconButton(
+                        tooltip: 'Undo (reclamă)',
+                        onPressed: _rewardedBusy ? null : _onRewardedUndo,
+                        icon: _rewardedBusy
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              )
+                            : const Icon(Icons.replay, color: Color(0xFF8F7A66)),
+                      ),
                     ],
                   ),
                 ],
@@ -172,6 +261,7 @@ class _GameScreenState extends State<GameScreen> {
       child: AspectRatio(
         aspectRatio: 1,
         child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onHorizontalDragEnd: (d) {
             if ((d.primaryVelocity ?? 0).abs() < 100) return;
             _move(d.primaryVelocity! > 0 ? 1 : 3);
@@ -190,6 +280,7 @@ class _GameScreenState extends State<GameScreen> {
               builder: (c, cons) {
                 final cellSize = (cons.maxWidth - 8 * 5) / 4;
                 return Stack(
+                  fit: StackFit.expand,
                   children: [
                     // Background cells
                     for (var r = 0; r < 4; r++)

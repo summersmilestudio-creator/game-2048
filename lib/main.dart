@@ -1,6 +1,9 @@
 import 'dart:io' show Platform;
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/material.dart';
+import 'package:upgrader/upgrader.dart';
+import 'services/notification_service.dart';
+import 'services/review_service.dart';
 import 'screens/home_screen.dart';
 import 'services/ads_service.dart';
 import 'services/purchase_service.dart';
@@ -18,6 +21,8 @@ Future<void> main() async {
   }
 
   AdsService.instance.initialize();
+  ReviewService.instance.registerLaunch();
+  NotificationService.instance.scheduleDailyReminder(title: '2048 Slide Puzzle', body: 'Poți ajunge la 2048 azi? 🔢');
   runApp(const Game2048App());
 }
 
@@ -34,7 +39,7 @@ class Game2048App extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFFAF8EF),
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFEDC22E)),
       ),
-      home: const HomeScreen(),
+      home: UpgradeAlert(child: const HomeScreen()),
     );
   }
 }
