@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../game/board.dart';
+import '../game/skins.dart';
 import '../services/ads_service.dart';
 import '../widgets/banner_ad_widget.dart';
+import '../widgets/game_juice.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -17,6 +19,7 @@ class _GameScreenState extends State<GameScreen> {
   int _highScore = 0;
   bool _wonShown = false;
   bool _rewardedBusy = false;
+  bool _coinsAwarded = false;
   // Snapshot grilă/scor pentru rewarded undo (în caz că _previousGrid lipsește).
   List<List<int>>? _snapshotGrid;
   int _snapshotScore = 0;
@@ -35,7 +38,6 @@ class _GameScreenState extends State<GameScreen> {
 
   Future<void> _onRewardedUndo() async {
     if (_rewardedBusy) return;
-    // Există ceva de anulat?
     final hasUndo = _snapshotGrid != null;
     if (!hasUndo) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -49,9 +51,7 @@ class _GameScreenState extends State<GameScreen> {
     setState(() {
       _rewardedBusy = false;
       if (earned) {
-        // Restore din snapshot — mai sigur decât _board.undo() când a fost deja apelat.
-        _board.grid =
-            _snapshotGrid!.map((r) => List<int>.from(r)).toList();
+        _board.grid = _snapshotGrid!.map((r) => List<int>.from(r)).toList();
         _board.score = _snapshotScore;
         _snapshotGrid = null;
       }
@@ -71,8 +71,10 @@ class _GameScreenState extends State<GameScreen> {
     }
   }
 
+  /// Coins earned at the end of a run, based on the score.
+  int _coinsForRun() => (_board.score ~/ 100).clamp(0, 999);
+
   void _move(int dir) {
-    // Snapshot înainte de mutare — folosit ca fallback pentru rewarded undo.
     final preGrid = _board.grid.map((r) => List<int>.from(r)).toList();
     final preScore = _board.score;
     if (_board.move(dir)) {
@@ -82,13 +84,15 @@ class _GameScreenState extends State<GameScreen> {
       _saveHighScore();
       if (_board.won && !_wonShown) {
         _wonShown = true;
+        Celebrate.show(context);
+        SkinStore.instance.addCoins(100); // bonus pentru 2048
         Future.microtask(() {
           if (!mounted) return;
           showDialog(
             context: context,
             builder: (c) => AlertDialog(
               title: const Text('🎉 2048!'),
-              content: const Text('Felicitări! Continuă pentru scor mai mare?'),
+              content: const Text('Felicitări! +100 monede 🪙\nContinuă pentru scor mai mare?'),
               actions: [
                 TextButton(onPressed: () => Navigator.pop(c), child: const Text('Continuă')),
               ],
@@ -97,6 +101,11 @@ class _GameScreenState extends State<GameScreen> {
         });
       }
       if (!_board.canMove) {
+        final earned = _coinsForRun();
+        if (!_coinsAwarded) {
+          _coinsAwarded = true;
+          if (earned > 0) SkinStore.instance.addCoins(earned);
+        }
         Future.microtask(() async {
           await AdsService.instance.maybeShowInterstitial();
           if (!mounted) return;
@@ -105,13 +114,14 @@ class _GameScreenState extends State<GameScreen> {
             builder: (c) => StatefulBuilder(
               builder: (c, setLocal) => AlertDialog(
                 title: const Text('Game Over'),
-                content: Text('Scor final: ${_board.score}'),
+                content: Text('Scor final: ${_board.score}\n+$earned monede 🪙'),
                 actions: [
                   TextButton(onPressed: () {
                     Navigator.pop(c);
                     setState(() {
                       _board.newGame();
                       _wonShown = false;
+                      _coinsAwarded = false;
                     });
                   }, child: const Text('Joc Nou')),
                   TextButton.icon(
@@ -119,13 +129,14 @@ class _GameScreenState extends State<GameScreen> {
                         ? null
                         : () async {
                             setLocal(() => _rewardedBusy = true);
-                            final earned = await AdsService.instance.showRewarded();
+                            final ok = await AdsService.instance.showRewarded();
                             _rewardedBusy = false;
                             if (!c.mounted) return;
-                            if (earned) {
+                            if (ok) {
                               Navigator.pop(c);
                               setState(() {
                                 _board.clearTopTiles(rows: 2);
+                                _coinsAwarded = false;
                               });
                             } else {
                               setLocal(() {});
@@ -157,94 +168,103 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final skin = activeSkin2048();
+    final dark = skin.bg.first.computeLuminance() < 0.5;
+    final fg = dark ? Colors.white : const Color(0xFF776E65);
     return Scaffold(
       bottomNavigationBar: const BannerAdWidget(),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('2048', style: TextStyle(fontSize: 56, fontWeight: FontWeight.w900, color: Color(0xFF776E65))),
-                  Row(
-                    children: [
-                      _scoreBox('SCOR', _board.score),
-                      const SizedBox(width: 8),
-                      _scoreBox('TOP', _highScore),
-                      const SizedBox(width: 8),
-                      // Rewarded undo: vede o reclamă scurtă și anulează ultima mutare.
-                      IconButton(
-                        tooltip: 'Undo (reclamă)',
-                        onPressed: _rewardedBusy ? null : _onRewardedUndo,
-                        icon: _rewardedBusy
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.replay, color: Color(0xFF8F7A66)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Combină tile-urile pentru 2048!',
-                      style: TextStyle(color: Color(0xFF776E65))),
-                  Row(
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () => setState(() => _board.undo()),
-                        icon: const Icon(Icons.undo, size: 16),
-                        label: const Text('Înapoi'),
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF8F7A66),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6)),
-                      ),
-                      const SizedBox(width: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _board.newGame();
-                            _wonShown = false;
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF8F7A66),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6)),
-                        child: const Text('Nou'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Expanded(child: _buildBoard()),
-              const SizedBox(height: 16),
-              const Text(
-                'Glisează ↑ ↓ ← → pentru a muta',
-                style: TextStyle(color: Color(0xFF776E65)),
-              ),
-              const SizedBox(height: 8),
-            ],
+      body: PremiumBackground(
+        colors: skin.bg,
+        bokeh: skin.bokeh,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('2048',
+                        style: TextStyle(
+                            fontSize: 56, fontWeight: FontWeight.w900, color: fg)),
+                    Row(
+                      children: [
+                        _scoreBox('SCOR', _board.score, skin),
+                        const SizedBox(width: 8),
+                        _scoreBox('TOP', _highScore, skin),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          tooltip: 'Undo (reclamă)',
+                          onPressed: _rewardedBusy ? null : _onRewardedUndo,
+                          icon: _rewardedBusy
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : Icon(Icons.replay, color: fg),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Combină tile-urile pentru 2048!',
+                        style: TextStyle(color: fg.withValues(alpha: 0.85))),
+                    Row(
+                      children: [
+                        ElevatedButton.icon(
+                          onPressed: () => setState(() => _board.undo()),
+                          icon: const Icon(Icons.undo, size: 16),
+                          label: const Text('Înapoi'),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF8F7A66),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6)),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _board.newGame();
+                              _wonShown = false;
+                              _coinsAwarded = false;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF8F7A66),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6)),
+                          child: const Text('Nou'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Expanded(child: _buildBoard(skin)),
+                const SizedBox(height: 16),
+                Text(
+                  'Glisează ↑ ↓ ← → pentru a muta',
+                  style: TextStyle(color: fg.withValues(alpha: 0.8)),
+                ),
+                const SizedBox(height: 8),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _scoreBox(String label, int v) {
+  Widget _scoreBox(String label, int v, Skin2048 skin) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFBBADA0),
+        color: skin.frame,
         borderRadius: BorderRadius.circular(6),
       ),
       child: Column(
@@ -256,7 +276,7 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _buildBoard() {
+  Widget _buildBoard(Skin2048 skin) {
     return Center(
       child: AspectRatio(
         aspectRatio: 1,
@@ -273,7 +293,7 @@ class _GameScreenState extends State<GameScreen> {
           child: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFFBBADA0),
+              color: skin.frame,
               borderRadius: BorderRadius.circular(8),
             ),
             child: LayoutBuilder(
@@ -282,7 +302,6 @@ class _GameScreenState extends State<GameScreen> {
                 return Stack(
                   fit: StackFit.expand,
                   children: [
-                    // Background cells
                     for (var r = 0; r < 4; r++)
                       for (var c = 0; c < 4; c++)
                         Positioned(
@@ -292,12 +311,11 @@ class _GameScreenState extends State<GameScreen> {
                           height: cellSize,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xFFCDC1B4),
+                              color: skin.emptyCell,
                               borderRadius: BorderRadius.circular(6),
                             ),
                           ),
                         ),
-                    // Tiles
                     for (var r = 0; r < 4; r++)
                       for (var c = 0; c < 4; c++)
                         if (_board.grid[r][c] != 0)
@@ -306,7 +324,7 @@ class _GameScreenState extends State<GameScreen> {
                             top: 8 + r * (cellSize + 8),
                             width: cellSize,
                             height: cellSize,
-                            child: _tile(_board.grid[r][c], cellSize),
+                            child: _tile(_board.grid[r][c], cellSize, skin),
                           ),
                   ],
                 );
@@ -318,27 +336,18 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget _tile(int v, double size) {
-    final colors = {
-      2: (Color(0xFFEEE4DA), Color(0xFF776E65)),
-      4: (Color(0xFFEDE0C8), Color(0xFF776E65)),
-      8: (Color(0xFFF2B179), Colors.white),
-      16: (Color(0xFFF59563), Colors.white),
-      32: (Color(0xFFF67C5F), Colors.white),
-      64: (Color(0xFFF65E3B), Colors.white),
-      128: (Color(0xFFEDCF72), Colors.white),
-      256: (Color(0xFFEDCC61), Colors.white),
-      512: (Color(0xFFEDC850), Colors.white),
-      1024: (Color(0xFFEDC53F), Colors.white),
-      2048: (Color(0xFFEDC22E), Colors.white),
-    };
-    final pair = colors[v] ?? (const Color(0xFF3C3A32), Colors.white);
+  Widget _tile(int v, double size, Skin2048 skin) {
     final fontScale = v >= 1024 ? 0.32 : (v >= 100 ? 0.4 : 0.5);
+    final color = skin.tileColor(v);
+    final glow = v >= 128 && skin.id != 'default';
     return AnimatedContainer(
       duration: const Duration(milliseconds: 100),
       decoration: BoxDecoration(
-        color: pair.$1,
+        color: color,
         borderRadius: BorderRadius.circular(6),
+        boxShadow: glow
+            ? [BoxShadow(color: color.withValues(alpha: 0.55), blurRadius: 12, spreadRadius: 1)]
+            : null,
       ),
       alignment: Alignment.center,
       child: Text(
@@ -346,7 +355,7 @@ class _GameScreenState extends State<GameScreen> {
         style: TextStyle(
           fontSize: size * fontScale,
           fontWeight: FontWeight.w900,
-          color: pair.$2,
+          color: skin.textColor(v),
         ),
       ),
     );

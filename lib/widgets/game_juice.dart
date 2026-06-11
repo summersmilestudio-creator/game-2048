@@ -167,6 +167,201 @@ class _AnimatedGradientBackgroundState extends State<AnimatedGradientBackground>
   }
 }
 
+/// Rich, slowly drifting premium background: a deep radial gradient with a few
+/// soft out-of-focus "bokeh" orbs floating upward. Wrap your screen body with it.
+class PremiumBackground extends StatefulWidget {
+  /// 3 colors, center → mid → edge of the radial gradient.
+  final List<Color> colors;
+  final Color bokeh;
+  final Widget child;
+  const PremiumBackground({
+    super.key,
+    required this.colors,
+    required this.bokeh,
+    required this.child,
+  });
+
+  @override
+  State<PremiumBackground> createState() => _PremiumBackgroundState();
+}
+
+class _PremiumBackgroundState extends State<PremiumBackground>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c;
+
+  static const _orbs = [
+    [0.18, 0.34, 0.7, 0.0],
+    [0.78, 0.46, 0.5, 0.3],
+    [0.50, 0.28, 0.9, 0.6],
+    [0.30, 0.40, 0.6, 0.15],
+    [0.86, 0.30, 0.8, 0.8],
+    [0.10, 0.26, 1.0, 0.45],
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _c = AnimationController(vsync: this, duration: const Duration(seconds: 18))
+      ..repeat();
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: RadialGradient(
+          center: const Alignment(0, -0.45),
+          radius: 1.25,
+          colors: widget.colors,
+          stops: const [0.0, 0.55, 1.0],
+        ),
+      ),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          RepaintBoundary(
+            child: AnimatedBuilder(
+              animation: _c,
+              builder: (context, _) => CustomPaint(
+                painter: _BokehPainter(_c.value, widget.bokeh),
+                size: Size.infinite,
+              ),
+            ),
+          ),
+          widget.child,
+        ],
+      ),
+    );
+  }
+}
+
+class _BokehPainter extends CustomPainter {
+  final double t;
+  final Color color;
+  _BokehPainter(this.t, this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final o in _PremiumBackgroundState._orbs) {
+      final x = o[0] * size.width;
+      final prog = (t * o[2] + o[3]) % 1.0;
+      final y = size.height * (1.15 - 1.3 * prog);
+      final r = o[1] * size.width * 0.5;
+      final fade = (1 - (prog - 0.5).abs() * 2).clamp(0.0, 1.0);
+      final paint = Paint()
+        ..color = color.withValues(alpha: 0.10 * fade)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 40);
+      canvas.drawCircle(Offset(x, y), r, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _BokehPainter old) => old.t != t;
+}
+
+/// One-shot sparkle/star burst at a point — use on a milestone (e.g. a merge
+/// that reaches a new highest tile).
+class BurstOverlay {
+  static void show(BuildContext context, Offset globalPos, Color color) {
+    try {
+      final overlay = Overlay.of(context, rootOverlay: true);
+      late OverlayEntry entry;
+      entry = OverlayEntry(
+        builder: (_) => _Burst(
+          pos: globalPos,
+          color: color,
+          onDone: () {
+            try {
+              entry.remove();
+            } catch (_) {}
+          },
+        ),
+      );
+      overlay.insert(entry);
+    } catch (_) {}
+  }
+}
+
+class _Burst extends StatefulWidget {
+  final Offset pos;
+  final Color color;
+  final VoidCallback onDone;
+  const _Burst({required this.pos, required this.color, required this.onDone});
+
+  @override
+  State<_Burst> createState() => _BurstState();
+}
+
+class _BurstState extends State<_Burst> with SingleTickerProviderStateMixin {
+  late final AnimationController _c;
+
+  @override
+  void initState() {
+    super.initState();
+    _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 650))
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((s) {
+        if (s == AnimationStatus.completed) widget.onDone();
+      })
+      ..forward();
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      left: widget.pos.dx,
+      top: widget.pos.dy,
+      child: IgnorePointer(
+        child: CustomPaint(painter: _BurstPainter(_c.value, widget.color)),
+      ),
+    );
+  }
+}
+
+class _BurstPainter extends CustomPainter {
+  final double t;
+  final Color color;
+  _BurstPainter(this.t, this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    const n = 10;
+    final dist = 8 + t * 46;
+    final opacity = (1 - t).clamp(0.0, 1.0);
+    canvas.drawCircle(
+      Offset.zero,
+      6 + t * 40,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3 * opacity
+        ..color = Colors.white.withValues(alpha: 0.6 * opacity),
+    );
+    for (var i = 0; i < n; i++) {
+      final a = (i / n) * 2 * math.pi;
+      final p = Offset(math.cos(a) * dist, math.sin(a) * dist);
+      final s = (4 - t * 2.5).clamp(0.5, 4.0);
+      final paint = Paint()
+        ..color = (i.isEven ? color : Colors.white).withValues(alpha: opacity);
+      canvas.drawCircle(p, s, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _BurstPainter old) => old.t != t;
+}
+
 /// Wrap a tappable widget: scales down briefly when pressed.
 class PressableScale extends StatefulWidget {
   final Widget child;

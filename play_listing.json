@@ -1,0 +1,63 @@
+{
+  "default_language": "en-US",
+  "title": "2048 Slide Puzzle",
+  "short_description": "Slide tiles, combine numbers, reach 2048 in this classic puzzle!",
+  "full_description": "2048 Slide Puzzle — the world's most addictive number game, now with extra modes and modern polish.\n\n★ HOW TO PLAY\nSwipe up, down, left, right. Tiles with the same number combine. 2 + 2 = 4. 4 + 4 = 8. Reach 2048 to win — but can you go further? 4096? 8192?\n\n★ FEATURES\n• Classic 4x4 grid\n• Bigger boards: 5x5, 6x6 for veterans\n• Time attack mode\n• Daily challenges with leaderboard\n• 8 achievements\n• Undo unlimited\n• Auto-save — never lose progress\n• Beautiful theme options\n• Plays offline\n\n★ SIMPLE RULES, INFINITE DEPTH\nEasy to pick up in 30 seconds. Hard to master. Perfect for short breaks and long trips alike.\n\n★ AD-LIGHT\nMinimal interruption. Optional ads. One purchase to remove forever.",
+  "translations": {
+    "en-US": {
+      "title": "2048 Slide Puzzle",
+      "short_description": "Slide tiles, combine numbers, reach 2048 in this classic puzzle!",
+      "full_description": "2048 Slide Puzzle — the world's most addictive number game, now with extra modes and modern polish.\n\n★ HOW TO PLAY\nSwipe up, down, left, right. Tiles with the same number combine. 2 + 2 = 4. 4 + 4 = 8. Reach 2048 to win — but can you go further? 4096? 8192?\n\n★ FEATURES\n• Classic 4x4 grid\n• Bigger boards: 5x5, 6x6 for veterans\n• Time attack mode\n• Daily challenges with leaderboard\n• 8 achievements\n• Undo unlimited\n• Auto-save — never lose progress\n• Beautiful theme options\n• Plays offline\n\n★ SIMPLE RULES, INFINITE DEPTH\nEasy to pick up in 30 seconds. Hard to master. Perfect for short breaks and long trips alike.\n\n★ AD-LIGHT\nMinimal interruption. Optional ads. One purchase to remove forever."
+    },
+    "zh-CN": {
+      "title": "2048 幻灯片拼图",
+      "short_description": "在这款经典拼图中滑动方块、组合数字，达到 2048！",
+      "full_description": "2048 Slide Puzzle — 世界上最令人上瘾的数字游戏，现在具有额外的模式和现代的修饰。\n\n★ 怎么玩\n向上、向下、向左、向右滑动。相同数字的瓷砖组合起来。 2 + 2 = 4。4 + 4 = 8。达到 2048 即可获胜 — 但你能更进一步吗？ 4096？ 8192？\n\n★ 特点\n• 经典4x4 网格\n• 更大的板：适合退伍军人的 5x5、6x6\n• 时间攻击模式\n• 排行榜的每日挑战\n• 8 项成就\n• 无限撤消\n• 自动保存——永远不会丢失进度\n• 精美的主题选项\n• 离线播放\n\n★ 简单的规则，无限的深度\n30 秒内轻松上手。很难掌握。非常适合短期休息和长途旅行。\n\n★ 广告灯\n最少的干扰。可选广告。一次购买即可永久删除。"
+    },
+    "es-419": {
+      "title": "Rompecabezas de diapositivas 2",
+      "short_description": "¡Desliza fichas, combina números y llega a 2048 en este rompecabezas clásico!",
+      "full_description": "2048 Slide Puzzle: el juego de números más adictivo del mundo, ahora con modos adicionales y un acabado moderno.\n\n★ CÓMO JUGAR\nDesliza hacia arriba, abajo, izquierda, derecha. Se combinan fichas con el mismo número. 2 + 2 = 4. 4 + 4 = 8. Llega a 2048 para ganar, pero ¿podrás llegar más lejos? 4096? 8192?\n\n★ CARACTERÍSTICAS\n• Cuadrícula clásica 4x4\n• Tableros más grandes: 5x5, 6x6 para veteranos\n• Modo de ataque de tiempo\n• Desafíos diarios con tabla de clasificación.\n• 8 logros\n• Deshacer ilimitado\n• Guardado automático: nunca pierdas el progreso\n• Hermosas opciones de temas\n• Juega sin conexión\n\n★ REGLAS SIMPLES, PROFUNDIDAD INFINITA\nFácil de recoger en 30 segundos. Difícil de dominar. Perfecto tanto para escapadas cortas como para viajes largos.\n\n★ AD-LUZ\nInterrupción mínima. Anuncios opcionales. Una compra para eliminar para siempre."
+    },
+    "fr-FR": {
+      "title": "Puzzle à diapositives 2048",
+      "short_description": "Faites glisser les tuiles, combinez les nombres et atteignez 2048 dans ce puzzle",
+      "full_description": "2048 Slide Puzzle — le jeu de chiffres le plus addictif au monde, désormais doté de modes supplémentaires et d'une finition moderne.\n\n★ COMMENT JOUER\nFaites glisser votre doigt vers le haut, le bas, la gauche, la droite. Les tuiles portant le même numéro se combinent. 2 + 2 = 4. 4 + 4 = 8. Atteignez 2048 pour gagner, mais pouvez-vous aller plus loin ? 4096 ? 8192 ?\n\n★ CARACTÉRISTIQUES\n• Grille 4x4 classique\n• Des planches plus grandes : 5x5, 6x6 pour les vétérans\n• Mode attaque contre la montre\n• Défis quotidiens avec classement\n• 8 réalisations\n• Annulation illimitée\n• Sauvegarde automatique : ne perdez jamais votre progression\n• Belles options de thème\n• Joue hors ligne\n\n★ RÈGLES SIMPLES, PROFONDEUR INFINIE\nFacile à récupérer en 30 secondes. Difficile à maîtriser. Parfait pour les courts séjours comme pour les longs voyages.\n\n★ AD-LIGHT\nInterruption minimale. Annonces facultatives. Un achat à supprimer pour toujours."
+    },
+    "de-DE": {
+      "title": "2048 Schiebepuzzle",
+      "short_description": "Schieben Sie Kacheln, kombinieren Sie Zahlen und erreichen Sie 2048 in diesem kl",
+      "full_description": "2048 Slide Puzzle – das fesselndste Zahlenspiel der Welt, jetzt mit zusätzlichen Modi und modernem Schliff.\n\n★ WIE MAN SPIELT\nWischen Sie nach oben, unten, links, rechts. Kacheln mit der gleichen Nummer werden kombiniert. 2 + 2 = 4. 4 + 4 = 8. Erreichen Sie 2048, um zu gewinnen – aber können Sie noch weiter gehen? 4096? 8192?\n\n★ EIGENSCHAFTEN\n• Klassisches 4x4-Raster\n• Größere Bretter: 5x5, 6x6 für Veteranen\n• Time-Attack-Modus\n• Tägliche Herausforderungen mit Bestenliste\n• 8 Erfolge\n• Unbegrenzt rückgängig machen\n• Automatisches Speichern – nie den Fortschritt verlieren\n• Schöne Themenoptionen\n• Spielt offline\n\n★ EINFACHE REGELN, UNENDLICHE TIEFE\nEinfaches Aufnehmen in 30 Sekunden. Schwer zu meistern. Perfekt für Kurzurlaube und lange Reisen gleichermaßen.\n\n★ AD-LIGHT\nMinimale Unterbrechung. Optionale Anzeigen. Ein Kauf, den Sie für immer entfernen können."
+    },
+    "it-IT": {
+      "title": "Puzzle scorrevole 2048",
+      "short_description": "Fai scorrere le tessere, combina i numeri e raggiungi il 2048 in questo classico",
+      "full_description": "2048 Slide Puzzle: il gioco di numeri più avvincente del mondo, ora con modalità extra e finiture moderne.\n\n★ COME GIOCARE\nScorri verso l'alto, verso il basso, a sinistra, a destra. Le tessere con lo stesso numero si combinano. 2 + 2 = 4. 4 + 4 = 8. Raggiungi il 2048 per vincere, ma puoi andare oltre? 4096? 8192?\n\n★ CARATTERISTICHE\n• Griglia 4x4 classica\n• Tavole più grandi: 5x5, 6x6 per i veterani\n• Modalità Time Attack\n• Sfide quotidiane con classifica\n• 8 risultati\n• Annulla illimitato\n• Salvataggio automatico: non perdere mai i progressi\n• Bellissime opzioni di temi\n• Riproduce offline\n\n★ REGOLE SEMPLICI, PROFONDITÀ INFINITA\nFacile da raccogliere in 30 secondi. Difficile da padroneggiare. Perfetto sia per brevi pause che per lunghi viaggi.\n\n★ LUCE ANNUNCI\nInterruzione minima. Annunci facoltativi. Un acquisto da rimuovere per sempre."
+    },
+    "pt-BR": {
+      "title": "Quebra-cabeça de slides 2048",
+      "short_description": "Deslize peças, combine números e chegue a 2.048 neste quebra-cabeça clássico!",
+      "full_description": "2048 Slide Puzzle — o jogo de números mais viciante do mundo, agora com modos extras e polimento moderno.\n\n★ COMO JOGAR\nDeslize para cima, para baixo, para a esquerda, para a direita. Peças com o mesmo número são combinadas. 2 + 2 = 4. 4 + 4 = 8. Chegue a 2048 para vencer – mas você consegue ir mais longe? 4096? 8192?\n\n★ RECURSOS\n• Grade 4x4 clássica\n• Tabuleiros maiores: 5x5, 6x6 para veteranos\n• Modo de ataque contra o tempo\n• Desafios diários com tabela de classificação\n• 8 conquistas\n• Desfazer ilimitado\n• Salvamento automático — nunca perca o progresso\n• Lindas opções de temas\n• Joga off-line\n\n★ REGRAS SIMPLES, PROFUNDIDADE INFINITA\nFácil de pegar em 30 segundos. Difícil de dominar. Perfeito para estadias curtas e viagens longas.\n\n★ AD-LIGHT\nInterrupção mínima. Anúncios opcionais. Uma compra para remover para sempre."
+    },
+    "ru-RU": {
+      "title": "2048 Слайд-головоломка",
+      "short_description": "Перемещайте плитки, комбинируйте числа и найдите 2048 в этой классической голово",
+      "full_description": "2048 Slide Puzzle — самая захватывающая игра с числами в мире, теперь с дополнительными режимами и современной отделкой.\n\n★ КАК ИГРАТЬ\nПроведите пальцем вверх, вниз, влево, вправо. Плитки с одинаковым номером объединяются. 2 + 2 = 4. 4 + 4 = 8. Чтобы победить, наберите 2048 — но сможете ли вы пойти дальше? 4096? 8192?\n\n★ ОСОБЕННОСТИ\n• Классическая сетка 4х4.\n• Доски большего размера: 5x5, 6x6 для ветеранов.\n• Режим атаки на время\n• Ежедневные испытания с таблицей лидеров.\n• 8 достижений\n• Отмена без ограничений\n• Автосохранение — никогда не теряйте прогресс\n• Красивые варианты тем\n• Играет в автономном режиме\n\n★ ПРОСТЫЕ ПРАВИЛА, БЕСКОНЕЧНАЯ ГЛУБИНА\nЛегко подобрать за 30 секунд. Трудно освоить. Идеально подходит как для коротких перерывов, так и для длительных поездок.\n\n★ AD-СВЕТ\nМинимальное прерывание. Дополнительная реклама. Одна покупка, которую можно удалить навсегда."
+    },
+    "ja-JP": {
+      "title": "2048 スライド パズル",
+      "short_description": "この古典的なパズルでタイルをスライドさせ、数字を組み合わせて 2048 に到達しましょう!",
+      "full_description": "2048 Slide Puzzle — 世界で最も中毒性の高い数字ゲームが、追加モードと現代的な洗練を加えて登場しました。\n\n★遊び方\n上下左右にスワイプします。同じ番号のタイルが結合されます。 2 + 2 = 4. 4 + 4 = 8. 2048 年に到達すると勝利します。しかし、さらに先に進むことはできますか? 4096? 8192?\n\n★特徴\n• クラシックな 4x4 グリッド\n• 大型ボード: ベテラン向けの 5x5、6x6\n• タイムアタックモード\n• リーダーボードによるデイリーチャレンジ\n• 8つの実績\n• 無制限に元に戻す\n• 自動保存 — 進行状況を失うことはありません\n• 美しいテーマオプション\n• オフラインで再生可能\n\n★ シンプルなルール、無限の深さ\n30秒で簡単に取り出せます。マスターするのが難しい。短い休暇にも長期旅行にも最適です。\n\n★アドライト\n最小限の中断。オプションの広告。一度購入すれば永久に削除できます。"
+    },
+    "ko-KR": {
+      "title": "2048 슬라이드 퍼즐",
+      "short_description": "이 클래식 퍼즐에서 타일을 슬라이드하고, 숫자를 결합하고, 2048에 도달하세요!",
+      "full_description": "2048 슬라이드 퍼즐 — 세계에서 가장 중독성이 강한 숫자 게임에 이제 추가 모드와 현대적인 세련미가 추가되었습니다.\n\n★ 플레이 방법\n위, 아래, 왼쪽, 오른쪽으로 스와이프합니다. 같은 숫자의 타일을 합칩니다. 2 + 2 = 4. 4 + 4 = 8. 승리하려면 2048년에 도달하세요. 하지만 더 멀리 갈 수 있나요? 4096? 8192?\n\n★ 특징\n• 클래식 4x4 그리드\n• 더 큰 보드: 베테랑을 위한 5x5, 6x6\n• 타임 어택 모드\n• 리더보드를 통한 일일 챌린지\n• 8개의 업적\n• 무제한 실행취소\n• 자동 저장 - 진행 상황을 잃지 않습니다.\n• 아름다운 테마 옵션\n• 오프라인으로 재생\n\n★ 간단한 규칙, 무한한 깊이\n30초 안에 쉽게 픽업할 수 있습니다. 마스터하기가 어렵습니다. 짧은 휴식과 긴 여행 모두에 적합합니다.\n\n★ AD-라이트\n최소한의 중단. 선택적 광고. 한 번 구매하면 영원히 제거됩니다."
+    },
+    "ar": {
+      "title": "2048 لغز الشريحة",
+      "short_description": "حرك البلاط، واجمع الأرقام، وتصل إلى 2048 في هذا اللغز الكلاسيكي!",
+      "full_description": "2048 Slide Puzzle - لعبة الأرقام الأكثر إدمانًا في العالم، الآن مع أوضاع إضافية وصقل حديث.\n\n★ كيفية اللعب\nاسحب لأعلى ولأسفل ولليسار ولليمين. الجمع بين البلاط مع نفس العدد. 2 + 2 = 4. 4 + 4 = 8. قم بالوصول إلى 2048 لتفوز — لكن هل يمكنك المضي قدمًا؟ 4096؟ 8192؟\n\n★ المميزات\n• شبكة الدفع الرباعي الكلاسيكية\n• لوحات أكبر: 5x5، 6x6 لقدامى المحاربين\n• وضع الهجوم الزمني\n• التحديات اليومية مع المتصدرين\n• 8 إنجازات\n• تراجع غير محدود\n• الحفظ التلقائي — لا تفقد التقدم أبدًا\n• خيارات موضوع جميل\n• يلعب حاليا\n\n★ قواعد بسيطة، وعمق لا حصر له\nمن السهل التقاطها في 30 ثانية. من الصعب السيطرة عليها. مثالية للإجازات القصيرة والرحلات الطويلة على حد سواء.\n\n★ AD-LIGHT\nالحد الأدنى من الانقطاع. إعلانات اختيارية. عملية شراء واحدة لإزالة إلى الأبد."
+    }
+  }
+}
