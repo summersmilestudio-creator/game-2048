@@ -91,7 +91,7 @@ class _GameScreenState extends State<GameScreen> {
           showDialog(
             context: context,
             builder: (c) => AlertDialog(
-              title: const Text('🎉 2048!'),
+              title: const Text('🎉 Ai reușit!'),
               content: const Text('Felicitări! +100 monede 🪙\nContinuă pentru scor mai mare?'),
               actions: [
                 TextButton(onPressed: () => Navigator.pop(c), child: const Text('Continuă')),
@@ -184,9 +184,9 @@ class _GameScreenState extends State<GameScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('2048',
+                    Text('Number Merge',
                         style: TextStyle(
-                            fontSize: 56, fontWeight: FontWeight.w900, color: fg)),
+                            fontSize: 30, fontWeight: FontWeight.w900, color: fg)),
                     Row(
                       children: [
                         _scoreBox('SCOR', _board.score, skin),
@@ -212,7 +212,7 @@ class _GameScreenState extends State<GameScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Combină tile-urile pentru 2048!',
+                    Text('Combină blocurile cu numere egale!',
                         style: TextStyle(color: fg.withValues(alpha: 0.85))),
                     Row(
                       children: [

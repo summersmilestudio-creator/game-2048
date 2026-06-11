@@ -117,17 +117,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 const Spacer(),
-                Text('2048',
+                Text('Number Merge',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                         color: fg,
-                        fontSize: 90,
+                        fontSize: 58,
                         fontWeight: FontWeight.w900,
                         shadows: dark
                             ? [Shadow(color: skin.bokeh.withValues(alpha: 0.6), blurRadius: 24)]
                             : null)),
                 const SizedBox(height: 8),
                 Text(
-                  'Glisează pentru a uni tile-urile.\nAjunge la 2048!',
+                  'Glisează pentru a uni blocurile.\nCombină numerele egale!',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: fg.withValues(alpha: 0.85), fontSize: 14),
                 ),

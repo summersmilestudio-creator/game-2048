@@ -181,7 +181,7 @@ class _SkinCard extends StatelessWidget {
 
   /// 2×2 preview of representative tiles from the theme palette.
   Widget _miniBoard() {
-    final vals = [2, 32, 128, 2048];
+    final vals = [2, 16, 128, 512];
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
