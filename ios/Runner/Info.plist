@@ -6,8 +6,6 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>Folosim acest identificator pentru a-ți afișa reclame relevante și pentru a măsura performanța jocului.</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-5549243085914479~5209911914</string>
 	<key>SKAdNetworkItems</key>
