@@ -17,8 +17,8 @@ class AdsService {
 
   // App Open (highest-value launch/return ad). Replace the two prod IDs with the
   // real AdMob App Open units when created.
-  static const String _appOpenProdAndroid = 'ca-app-pub-5549243085914479/APPOPEN_ANDROID';
-  static const String _appOpenProdIOS = 'ca-app-pub-5549243085914479/APPOPEN_IOS';
+  static const String _appOpenProdAndroid = 'ca-app-pub-5549243085914479/2832643470';
+  static const String _appOpenProdIOS = 'ca-app-pub-5549243085914479/2094397019';
 
   static const String _bannerTest = 'ca-app-pub-3940256099942544/6300978111';
   static const String _interstitialTest = 'ca-app-pub-3940256099942544/1033173712';
@@ -26,7 +26,7 @@ class AdsService {
   static const String _appOpenTestAndroid = 'ca-app-pub-3940256099942544/9257395921';
   static const String _appOpenTestIOS = 'ca-app-pub-3940256099942544/5575463023';
 
-  static const Duration _minInterval = Duration(seconds: 60);
+  static const Duration _minInterval = Duration(seconds: 40);
   static const Duration _appOpenMaxAge = Duration(hours: 4);
 
   bool _initialized = false;

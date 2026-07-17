@@ -1,7 +1,7 @@
 name: game_2048
 description: "Number Merge - merge number blocks puzzle"
 publish_to: 'none'
-version: 1.3.0+15
+version: 1.3.1+16
 environment:
   sdk: ^3.11.1
 
